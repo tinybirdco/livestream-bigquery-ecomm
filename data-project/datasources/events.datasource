@@ -1,0 +1,15 @@
+DESCRIPTION >
+    [Mockingbird](https://mockingbird.tinybird.co/?host=eu_gcp&token=p.eyJ1IjogImZjZTA2MjBmLTI2ZDAtNGUwNi05MjdhLTFmN2EyZDQwMDI4MSIsICJpZCI6ICJmYjk3NGZhNS03YmJmLTRlZjUtODA0NC0yMTRiZGRkMjIyZWMifQ.gAWzz0UmfF4FeTuKtKS8DDkhXC6JmQFtnc5dbdN1t18&datasource=events&eps=1000&schema=%28%27H7H%27%29%7Estore.6%29%29%7Ebrowser*%27ChromeIBMveIFirefoxISafariPJO%7Eproduct.100000%29%29%7Epromo*0A-19AD%7Esales*1GJ4-50%2C5GAD%7Eutm_source*%27instagMmInewsletterItiktokIsearch_enginePA3AO%29*7K_LedEKN-%5D%7ELsN._id7MngeEmin%211%7Emax%217%21%28%27type%21%27A%2C1D%5D%29%29EIpaMms%21%28%27G%2C2HtimestampI%27%7EJ%2C3%2CKvaluesLweightMraN%21%5BO8G0DP%27-65%01PONMLKJIHGEDA7.-*_)
+
+SCHEMA >
+    `browser` String `json:$.browser`,
+    `product_id` Int32 `json:$.product_id`,
+    `promo` Int16 `json:$.promo`,
+    `sales` Int16 `json:$.sales`,
+    `store_id` Int16 `json:$.store_id`,
+    `timestamp` DateTime64(3) `json:$.timestamp`,
+    `utm_source` String `json:$.utm_source`
+
+ENGINE "MergeTree"
+ENGINE_PARTITION_KEY "toYear(timestamp)"
+ENGINE_SORTING_KEY "timestamp, sales, store_id, utm_source"

@@ -1,0 +1,138 @@
+import {
+  Card,
+  Title,
+  Text,
+  Tab,
+  TabList,
+  ColGrid,
+  Col,
+  BarChart,
+  BarList,
+  LineChart,
+  DonutChart,
+  TextInput
+} from '@tremor/react';
+
+import { useState, useEffect } from 'react';
+
+const host = process.env.NEXT_PUBLIC_TINYBIRD_HOST;
+
+export default function Example() {
+
+  const [selectedView, setSelectedView] = useState(1);
+  const [token, setToken] = useState(process.env.NEXT_PUBLIC_TINYBIRD_TOKEN)
+  const [hourlySales, setHourlySales] = useState([]);
+  const [top10, setTop10] = useState([]);
+  const [salesUTM, setSalesUTM] = useState([]);
+  const [hourlySalesStore, setHourlySalesStore] = useState([]);
+
+  let apiHourlySales = `https://${host}/v0/pipes/hourly_sales.json?token=${token}`;
+  let apiTop10 = `https://${host}/v0/pipes/top_10_prods.json?token=${token}`;
+  let apiSalesUTM = `https://${host}/v0/pipes/sales_by_utm.json?token=${token}`;
+  let apiHourlyStore = `https://${host}/v0/pipes/hourly_sales_by_store.json?token=${token}`;
+
+  const fetchTinybirdUrl = async (fetchUrl: string, setState: Function) => {
+    console.log(fetchUrl);
+    const data = await fetch(fetchUrl)
+    const jsonData = await data.json();
+    setState(jsonData.data);
+  };
+
+  useEffect(() => {
+    fetchTinybirdUrl(apiHourlySales, setHourlySales)
+  }, [apiHourlySales]);
+  useEffect(() => {
+    fetchTinybirdUrl(apiTop10, setTop10)
+  }, [apiTop10]);
+  useEffect(() => {
+    fetchTinybirdUrl(apiSalesUTM, setSalesUTM)
+  }, [apiSalesUTM]);
+  useEffect(() => {
+    fetchTinybirdUrl(apiHourlyStore, setHourlySalesStore)
+  }, [apiHourlyStore]);
+
+  const dollarFormatter = (number: number) => {
+    return "$ " + Intl.NumberFormat("us").format(number).toString();
+  };
+
+  const numberFormatter = (number: number) => {
+    return Intl.NumberFormat("us").format(number).toString();
+  };
+
+  return (
+      <main className="bg-slate-50 p-6 sm:p-10">
+
+          <Title>eCommerce Dashboard</Title>
+
+          <TextInput
+              value= {token}
+              onChange={ (event) => setToken(event.target.value) }
+              placeholder="Enter auth token"
+              maxWidth="max-w-sm"
+              marginTop="mt-4"
+          />
+
+          <TabList defaultValue={ 1 } handleSelect={ (value) => setSelectedView(value) } marginTop="mt-6">
+              <Tab value={ 1 } text="Sales" />
+              <Tab value={ 2 } text="Marketing" />
+          </TabList>
+
+          { selectedView === 1 ? (
+              <>
+                  <ColGrid numCols={ 3 } gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
+                      <Col numColSpan={ 2 }>
+                          <Card>
+                              <Title>Sales Trend</Title>
+                              <BarChart
+                                  data={hourlySales}
+                                  categories={["total_sales"]}
+                                  dataKey="hour"
+                                  colors={["sky"]}
+                                  valueFormatter={numberFormatter}
+                                  height="h-80"
+                              />
+                          </Card>
+                      </Col>
+                      <Card>
+                          <Title>Top 10 Products by Revenue</Title>
+                          <BarList 
+                              data={top10}
+                              valueFormatter={dollarFormatter}
+                              color="sky"
+                          />
+                      </Card>
+                  </ColGrid>
+              </>
+          ) : (
+                  <ColGrid numCols={ 3 } gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
+                      <Card>
+                          <Title>Sales by UTM</Title>
+                          <DonutChart
+                              data={salesUTM}
+                              category="total_sales"
+                              dataKey="utm_source"
+                              colors={[ "fuchsia", "blue", "rose", "yellow" ]}
+                              variant="donut"
+                              valueFormatter={numberFormatter}
+                              height="h-60"
+                          />
+                      </Card>
+                      <Col numColSpan={ 2 }>
+                          <Card>
+                              <Title>Sales Trend by Store</Title>
+                              <BarChart
+                                  data={hourlySalesStore}
+                                  categories={["store_1","store_2","store_3","store_4","store_5","store_6"]}
+                                  dataKey="hour"
+                                  colors={["red","orange","green","sky","purple","zinc"]}
+                                  valueFormatter={numberFormatter}
+                                  stack={true}
+                                  height="h-80"
+                              />
+                          </Card>
+                      </Col>
+                  </ColGrid>
+          ) }
+      </main>
+  );
+}

@@ -1,0 +1,9 @@
+
+SCHEMA >
+    `id` Int32,
+    `name` String,
+    `family` String,
+    `price` Float32
+
+ENGINE "MergeTree"
+ENGINE_SORTING_KEY "id, name, family"

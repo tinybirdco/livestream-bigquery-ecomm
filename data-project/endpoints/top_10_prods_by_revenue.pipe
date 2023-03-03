@@ -1,0 +1,39 @@
+TOKEN "top_10_prods_by_revenue_endpoint_read_0855" READ
+
+NODE filter_data
+SQL >
+
+    %
+    SELECT product_id, sales
+    FROM events
+    WHERE
+        timestamp >= now() - interval 1 hour
+        {% if defined(family_param) %}
+        AND product_id IN (
+            SELECT id
+            FROM prods
+            WHERE
+                family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
+        )
+        {% end %}
+
+
+
+NODE sum_sales
+SQL >
+
+    SELECT product_id, sum(sales) as total_sales
+    FROM filter_data
+    GROUP BY product_id
+
+
+
+NODE endpoint
+SQL >
+
+    SELECT name, total_sales * price AS revenue FROM sum_sales
+    JOIN prods ON product_id = id
+    ORDER BY revenue desc
+    LIMIT 10
+
+

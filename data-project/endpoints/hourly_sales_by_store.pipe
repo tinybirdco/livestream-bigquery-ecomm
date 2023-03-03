@@ -1,0 +1,24 @@
+TOKEN "hourly_sales_by_store_endpoint_read_9391" READ
+
+NODE endpoint
+SQL >
+
+    %
+    SELECT toStartOfHour(timestamp) AS hour, store_id, sum(sales) AS total_sales
+    FROM events
+    WHERE 1=1
+        {% if defined(start_dt) and defined(end_dt) %}
+        AND timestamp BETWEEN toDateTime({{DateTime(start_dt)}}) AND toDateTime({{DateTime(end_dt)}})
+        {% end %}
+        {% if defined(family_param) %}
+        AND product_id IN (
+            SELECT id
+            FROM prods
+            WHERE
+                family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
+        )
+        {% end %}
+    GROUP BY hour, store_id
+    ORDER BY hour
+
+
