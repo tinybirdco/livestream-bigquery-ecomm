@@ -16,12 +16,12 @@ import {
 
 import { useState, useEffect } from 'react';
 
-const host = process.env.NEXT_PUBLIC_TINYBIRD_HOST;
+const host = 'api.tinybird.co';
 
 export default function Example() {
 
   const [selectedView, setSelectedView] = useState(1);
-  const [token, setToken] = useState(process.env.NEXT_PUBLIC_TINYBIRD_TOKEN)
+  const [token, setToken] = useState('p.eyJ1IjogImZjZTA2MjBmLTI2ZDAtNGUwNi05MjdhLTFmN2EyZDQwMDI4MSIsICJpZCI6ICJkY2I5M2EyNi01MjE5LTQxMmUtOTc1NS0xNzM2ZWRhYTY4ZjUifQ.3UvVNzluKEYl5nlZ9Cwfn7PYXj67k3P9zndHzIugLH8')
   const [hourlySales, setHourlySales] = useState([]);
   const [top5, settop5] = useState([]);
   const [salesUTM, setSalesUTM] = useState([]);
