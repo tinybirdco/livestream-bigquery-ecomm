@@ -1,0 +1,32 @@
+NODE mv
+SQL >
+
+    SELECT
+        toStartOfHour(timestamp) AS timestamp,
+        name,
+        family,
+        brand,
+        size,
+        store_id,
+        utm_source,
+        sumSimpleState(sales) AS sales,
+        price,
+        sales * price AS revenue
+    FROM events
+    INNER JOIN prods ON product_id = id
+    GROUP BY
+        timestamp,
+        name,
+        family,
+        brand,
+        size,
+        store_id,
+        utm_source,
+        price
+
+TYPE materialized
+DATASOURCE mv_hourly_sales
+ENGINE "AggregatingMergeTree"
+ENGINE_PARTITION_KEY "toYYYYMM(timestamp)"
+ENGINE_SORTING_KEY "timestamp, family, name, brand, size, store_id, utm_source, price"
+

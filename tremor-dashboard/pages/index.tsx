@@ -67,7 +67,7 @@ export default function Example() {
 
           <Title>eCommerce Dashboard</Title>
 
-          <Flex justifyContent="justify-between" marginTop="mt-4">
+          <Flex justifyContent="justify-between" marginTop="mt-4" spaceX='space-x-6'>
               <TextInput
                   value= {token}
                   onChange={ (event) => setToken(event.target.value) }
@@ -82,22 +82,13 @@ export default function Example() {
                   maxWidth="max-w-sm"
                   marginTop="mt-0"
               >
-                  <DropdownItem
-                      value={ "All" }
-                      text="All"
-                  />
-                  <DropdownItem
-                      value={ "Jacket" }
-                      text="Jacket"
-                  />
-                  <DropdownItem
-                      value={ "Shirt" }
-                      text="Shirt"
-                  />
-                  <DropdownItem
-                      value={ "Sweatshirt" }
-                      text="Sweatshirt"
-                  />
+                  <DropdownItem value={ "All" } text="All"/>
+                  <DropdownItem value={ "Jacket" } text="Jacket"/>
+                  <DropdownItem value={ "Shirt" } text="Shirt"/>
+                  <DropdownItem value={ "Sweatshirt" } text="Sweatshirt"/>
+                  <DropdownItem value={ "Pants" } text="Pants"/>
+                  <DropdownItem value={ "Jeans" } text="Jeans"/>
+                  <DropdownItem value={ "Shorts" } text="Shorts"/>
               </Dropdown>
           </Flex>
 

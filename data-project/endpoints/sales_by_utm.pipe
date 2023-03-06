@@ -2,29 +2,16 @@ TOKEN "sales_by_utm_endpoint_read_5474" READ
 
 TOKEN "tremor_token" READ
 
-NODE filter_data
+NODE endpoint
 SQL >
 
     %
-    SELECT utm_source, sales
-    FROM events
+    SELECT utm_source, sum(sales) AS total_sales
+    FROM mv_hourly_sales
     WHERE 1=1
         {% if family_param != 'All' %}
-        AND product_id IN (
-            SELECT id
-            FROM prods
-            WHERE
-                family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
-        )
+        AND family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
         {% end %}
-
-
-
-NODE sum_sales
-SQL >
-
-    SELECT utm_source, sum(sales) as total_sales
-    FROM filter_data
     GROUP BY utm_source
     ORDER BY total_sales desc
 

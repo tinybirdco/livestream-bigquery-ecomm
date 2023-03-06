@@ -1,0 +1,17 @@
+# Data Source created from Pipe 'mat_hourly_sales'
+
+SCHEMA >
+    `timestamp` DateTime,
+    `name` String,
+    `family` String,
+    `brand` String,
+    `size` String,
+    `store_id` Int16,
+    `utm_source` String,
+    `sales` SimpleAggregateFunction(sum, Int64),
+    `price` Float32,
+    `revenue` Float64
+
+ENGINE "AggregatingMergeTree"
+ENGINE_PARTITION_KEY "toYYYYMM(timestamp)"
+ENGINE_SORTING_KEY "timestamp, family, name, brand, size, store_id, utm_source, price"

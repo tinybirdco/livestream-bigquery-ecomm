@@ -8,20 +8,15 @@ SQL >
     %
     SELECT toStartOfHour(timestamp) AS hour,
     sumIf(sales, store_id = 1) AS store_1,
-    sumIf(sales, store_id = 1) AS store_2,
-    sumIf(sales, store_id = 1) AS store_3,
-    sumIf(sales, store_id = 1) AS store_4,
-    sumIf(sales, store_id = 1) AS store_5,
-    sumIf(sales, store_id = 1) AS store_6
-    FROM events
+    sumIf(sales, store_id = 2) AS store_2,
+    sumIf(sales, store_id = 3) AS store_3,
+    sumIf(sales, store_id = 4) AS store_4,
+    sumIf(sales, store_id = 5) AS store_5,
+    sumIf(sales, store_id = 6) AS store_6
+    FROM mv_hourly_sales
     WHERE 1=1
         {% if family_param != 'All' %}
-        AND product_id IN (
-            SELECT id
-            FROM prods
-            WHERE
-                family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
-        )
+        AND family = {{String(family_param,"Sweatshirt",description="Product family parameter",required=True,)}}
         {% end %}
     GROUP BY hour
     ORDER BY hour
