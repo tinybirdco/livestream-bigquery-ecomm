@@ -6,6 +6,7 @@ import {
   ColGrid,
   Col,
   BarChart,
+  AreaChart,
   BarList,
   DonutChart,
   TextInput,
@@ -111,7 +112,7 @@ export default function Example() {
                       <Col numColSpan={ 2 }>
                           <Card>
                               <Title>Sales Trend</Title>
-                              <BarChart
+                              <AreaChart
                                   data={hourlySales}
                                   categories={["total_sales"]}
                                   dataKey="hour"
