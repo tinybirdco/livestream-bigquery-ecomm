@@ -1,14 +1,15 @@
 TOKEN "sales_by_utm_endpoint_read_5474" READ
 
+TOKEN "tremor_token" READ
+
 NODE filter_data
 SQL >
 
     %
     SELECT utm_source, sales
     FROM events
-    WHERE
-        timestamp >= now() - interval 1 hour
-        {% if defined(family_param) %}
+    WHERE 1=1
+        {% if family_param != 'All' %}
         AND product_id IN (
             SELECT id
             FROM prods

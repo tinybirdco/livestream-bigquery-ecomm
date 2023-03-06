@@ -1,16 +1,17 @@
 import {
   Card,
   Title,
-  Text,
   Tab,
   TabList,
   ColGrid,
   Col,
   BarChart,
   BarList,
-  LineChart,
   DonutChart,
-  TextInput
+  TextInput,
+  Dropdown,
+  DropdownItem,
+  Flex
 } from '@tremor/react';
 
 import { useState, useEffect } from 'react';
@@ -22,14 +23,15 @@ export default function Example() {
   const [selectedView, setSelectedView] = useState(1);
   const [token, setToken] = useState(process.env.NEXT_PUBLIC_TINYBIRD_TOKEN)
   const [hourlySales, setHourlySales] = useState([]);
-  const [top10, setTop10] = useState([]);
+  const [top5, settop5] = useState([]);
   const [salesUTM, setSalesUTM] = useState([]);
   const [hourlySalesStore, setHourlySalesStore] = useState([]);
+  const [family, setFamily] = useState('All');
 
-  let apiHourlySales = `https://${host}/v0/pipes/hourly_sales.json?token=${token}`;
-  let apiTop10 = `https://${host}/v0/pipes/top_10_prods.json?token=${token}`;
-  let apiSalesUTM = `https://${host}/v0/pipes/sales_by_utm.json?token=${token}`;
-  let apiHourlyStore = `https://${host}/v0/pipes/hourly_sales_by_store.json?token=${token}`;
+  let apiHourlySales = `https://${host}/v0/pipes/hourly_sales.json?token=${token}&family_param=${family}`;
+  let apitop5 = `https://${host}/v0/pipes/top_5_prods.json?token=${token}&family_param=${family}`;
+  let apiSalesUTM = `https://${host}/v0/pipes/sales_by_utm.json?token=${token}&family_param=${family}`;
+  let apiHourlyStore = `https://${host}/v0/pipes/hourly_sales_by_store.json?token=${token}&family_param=${family}`;
 
   const fetchTinybirdUrl = async (fetchUrl: string, setState: Function) => {
     console.log(fetchUrl);
@@ -42,8 +44,8 @@ export default function Example() {
     fetchTinybirdUrl(apiHourlySales, setHourlySales)
   }, [apiHourlySales]);
   useEffect(() => {
-    fetchTinybirdUrl(apiTop10, setTop10)
-  }, [apiTop10]);
+    fetchTinybirdUrl(apitop5, settop5)
+  }, [apitop5]);
   useEffect(() => {
     fetchTinybirdUrl(apiSalesUTM, setSalesUTM)
   }, [apiSalesUTM]);
@@ -64,13 +66,39 @@ export default function Example() {
 
           <Title>eCommerce Dashboard</Title>
 
-          <TextInput
-              value= {token}
-              onChange={ (event) => setToken(event.target.value) }
-              placeholder="Enter auth token"
-              maxWidth="max-w-sm"
-              marginTop="mt-4"
-          />
+          <Flex justifyContent="justify-between" marginTop="mt-4">
+              <TextInput
+                  value= {token}
+                  onChange={ (event) => setToken(event.target.value) }
+                  placeholder="Enter auth token"
+                  maxWidth="max-w-sm"
+                  marginTop="mt-0"
+              />
+              <Dropdown
+                  value={family}
+                  onValueChange={ (event) => setFamily(event) }
+                  placeholder="Select..."
+                  maxWidth="max-w-sm"
+                  marginTop="mt-0"
+              >
+                  <DropdownItem
+                      value={ "All" }
+                      text="All"
+                  />
+                  <DropdownItem
+                      value={ "Jacket" }
+                      text="Jacket"
+                  />
+                  <DropdownItem
+                      value={ "Shirt" }
+                      text="Shirt"
+                  />
+                  <DropdownItem
+                      value={ "Sweatshirt" }
+                      text="Sweatshirt"
+                  />
+              </Dropdown>
+          </Flex>
 
           <TabList defaultValue={ 1 } handleSelect={ (value) => setSelectedView(value) } marginTop="mt-6">
               <Tab value={ 1 } text="Sales" />
@@ -87,7 +115,7 @@ export default function Example() {
                                   data={hourlySales}
                                   categories={["total_sales"]}
                                   dataKey="hour"
-                                  colors={["sky"]}
+                                  colors={["emerald"]}
                                   valueFormatter={numberFormatter}
                                   height="h-80"
                               />
@@ -96,7 +124,7 @@ export default function Example() {
                       <Card>
                           <Title>Top 10 Products by Revenue</Title>
                           <BarList 
-                              data={top10}
+                              data={top5}
                               valueFormatter={dollarFormatter}
                               color="sky"
                           />
@@ -124,7 +152,7 @@ export default function Example() {
                                   data={hourlySalesStore}
                                   categories={["store_1","store_2","store_3","store_4","store_5","store_6"]}
                                   dataKey="hour"
-                                  colors={["red","orange","green","sky","purple","zinc"]}
+                                  colors={["red","orange","amber","green","sky","purple"]}
                                   valueFormatter={numberFormatter}
                                   stack={true}
                                   height="h-80"

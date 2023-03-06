@@ -1,5 +1,7 @@
 TOKEN "hourly_sales_endpoint_read_6039" READ
 
+TOKEN "tremor_token" READ
+
 NODE endpoint
 SQL >
 
@@ -7,10 +9,7 @@ SQL >
     SELECT toStartOfHour(timestamp) AS hour, sum(sales) AS total_sales
     FROM events
     WHERE 1=1
-        {% if defined(start_dt) and defined(end_dt) %}
-        AND timestamp BETWEEN toDateTime({{DateTime(start_dt)}}) AND toDateTime({{DateTime(end_dt)}})
-        {% end %}
-        {% if defined(family_param) %}
+        {% if family_param != 'All' %}
         AND product_id IN (
             SELECT id
             FROM prods
