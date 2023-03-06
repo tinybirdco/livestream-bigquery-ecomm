@@ -1,1 +1,1 @@
-# livestream-bigquery-ecomm
+# Live Coding Session: Real-time analytics with BigQuery
