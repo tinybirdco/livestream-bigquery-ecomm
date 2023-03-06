@@ -122,11 +122,12 @@ export default function Example() {
                           </Card>
                       </Col>
                       <Card>
-                          <Title>Top 10 Products by Revenue</Title>
+                          <Title>Top 5 Products by Revenue</Title>
                           <BarList 
                               data={top5}
                               valueFormatter={dollarFormatter}
                               color="sky"
+                              marginTop='mt-4'
                           />
                       </Card>
                   </ColGrid>
